@@ -11,6 +11,11 @@ export interface YearStore {
   vacationDays: string[] // ISO dates "YYYY-MM-DD"
 }
 
+export interface Holiday {
+  date: string // ISO date "YYYY-MM-DD"
+  name: string
+}
+
 export interface Period {
   start: string // ISO date
   end: string   // ISO date

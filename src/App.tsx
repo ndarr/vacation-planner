@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import { CalendarGrid } from './components/CalendarGrid'
 import { BudgetTracker } from './components/BudgetTracker'
 import { PeriodsPanel } from './components/PeriodsPanel'
+import { HolidaysPanel } from './components/HolidaysPanel'
 import { SettingsPanel } from './components/SettingsPanel'
 import { Legend } from './components/Legend'
 import { getHolidays } from './utils/holidays'
@@ -17,8 +18,9 @@ function App() {
     () => getHolidays(settings.year, settings.country, settings.region),
     [settings.year, settings.country, settings.region]
   )
+  const holidaySet = useMemo(() => new Set(holidays.map(h => h.date)), [holidays])
   const vacationDays = useMemo(() => new Set(store.vacationDays), [store.vacationDays])
-  const periods = useMemo(() => computePeriods(store.vacationDays, holidays), [store.vacationDays, holidays])
+  const periods = useMemo(() => computePeriods(store.vacationDays, holidaySet), [store.vacationDays, holidaySet])
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col lg:h-screen lg:flex-row lg:overflow-hidden">
@@ -29,7 +31,7 @@ function App() {
         </div>
         <CalendarGrid
           year={settings.year}
-          holidays={holidays}
+          holidays={holidaySet}
           vacationDays={vacationDays}
           onToggleDay={toggleDay}
         />
@@ -37,6 +39,7 @@ function App() {
       <aside className="w-full lg:w-72 border-t lg:border-t-0 lg:border-l border-gray-200 p-6 flex flex-col gap-4 bg-white lg:overflow-y-auto">
         <BudgetTracker allowance={store.allowance} usedDays={store.vacationDays.length} />
         <PeriodsPanel periods={periods} />
+        <HolidaysPanel holidays={holidays} />
         <SettingsPanel
           settings={settings}
           allowance={store.allowance}
