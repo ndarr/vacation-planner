@@ -23,34 +23,36 @@ export function SettingsPanel({ settings, allowance, onUpdateSettings, onUpdateA
         <span className="text-gray-400 text-xs">{expanded ? '▲' : '▼'}</span>
       </button>
 
-      {expanded && (
-        <div className="flex flex-col gap-3 mt-3">
-          <label className="flex flex-col gap-1">
-            <span className="text-xs text-gray-500">Vacation days</span>
-            <input
-              type="number"
-              min={0}
-              max={365}
-              className="text-sm border border-gray-200 rounded px-2 py-1"
-              value={allowance}
-              onChange={e => onUpdateAllowance(Number(e.target.value))}
-            />
-          </label>
+      <div className={`grid transition-[grid-template-rows] duration-150 ease-in-out ${expanded ? '[grid-template-rows:1fr]' : '[grid-template-rows:0fr]'}`}>
+        <div className="overflow-hidden">
+          <div className="flex flex-col gap-3 pt-3">
+            <label className="flex flex-col gap-1">
+              <span className="text-xs text-gray-500">Vacation days</span>
+              <input
+                type="number"
+                min={0}
+                max={365}
+                className="text-sm border border-gray-200 rounded px-2 py-1"
+                value={allowance}
+                onChange={e => onUpdateAllowance(Number(e.target.value))}
+              />
+            </label>
 
-          <label className="flex flex-col gap-1">
-            <span className="text-xs text-gray-500">Country</span>
-            <select
-              className="text-sm border border-gray-200 rounded px-2 py-1"
-              value={settings.country}
-              onChange={e => onUpdateSettings({ country: e.target.value })}
-            >
-              {countries.map(c => (
-                <option key={c.code} value={c.code}>{c.name}</option>
-              ))}
-            </select>
-          </label>
+            <label className="flex flex-col gap-1">
+              <span className="text-xs text-gray-500">Country</span>
+              <select
+                className="text-sm border border-gray-200 rounded px-2 py-1"
+                value={settings.country}
+                onChange={e => onUpdateSettings({ country: e.target.value })}
+              >
+                {countries.map(c => (
+                  <option key={c.code} value={c.code}>{c.name}</option>
+                ))}
+              </select>
+            </label>
+          </div>
         </div>
-      )}
+      </div>
     </div>
   )
 }
