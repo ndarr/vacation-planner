@@ -5,6 +5,7 @@ import { PeriodsPanel } from './components/PeriodsPanel'
 import { HolidaysPanel } from './components/HolidaysPanel'
 import { SettingsPanel } from './components/SettingsPanel'
 import { Legend } from './components/Legend'
+import { YearSelector } from './components/YearSelector'
 import { getHolidays } from './utils/holidays'
 import { computePeriods } from './utils/periods'
 import { useSettings } from './hooks/useSettings'
@@ -26,8 +27,11 @@ function App() {
     <div className="min-h-screen bg-gray-50 flex flex-col lg:h-screen lg:flex-row lg:overflow-hidden">
       <main className="flex-1 p-6 lg:p-8 lg:overflow-auto">
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-800 mb-3">Vacation Planner {settings.year}</h1>
-          <Legend />
+          <div className="flex items-center justify-between mb-3">
+            <h1 className="text-lg font-semibold text-gray-500">Vacation Planner</h1>
+            <Legend />
+          </div>
+          <YearSelector year={settings.year} onChange={year => updateSettings({ year })} />
         </div>
         <CalendarGrid
           year={settings.year}

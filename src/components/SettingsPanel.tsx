@@ -10,11 +10,6 @@ interface Props {
   onReset: () => void
 }
 
-function yearOptions(): number[] {
-  const current = new Date().getFullYear()
-  return [current - 1, current, current + 1, current + 2]
-}
-
 export function SettingsPanel({ settings, allowance, onUpdateSettings, onUpdateAllowance, onReset }: Props) {
   const countries = useMemo(getSupportedCountries, [])
 
@@ -23,19 +18,6 @@ export function SettingsPanel({ settings, allowance, onUpdateSettings, onUpdateA
       <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">Settings</h2>
 
       <div className="flex flex-col gap-3">
-        <label className="flex flex-col gap-1">
-          <span className="text-xs text-gray-500">Year</span>
-          <select
-            className="text-sm border border-gray-200 rounded px-2 py-1"
-            value={settings.year}
-            onChange={e => onUpdateSettings({ year: Number(e.target.value) })}
-          >
-            {yearOptions().map(y => (
-              <option key={y} value={y}>{y}</option>
-            ))}
-          </select>
-        </label>
-
         <label className="flex flex-col gap-1">
           <span className="text-xs text-gray-500">Vacation days</span>
           <input
@@ -60,6 +42,7 @@ export function SettingsPanel({ settings, allowance, onUpdateSettings, onUpdateA
             ))}
           </select>
         </label>
+
         <button
           className="w-full text-sm text-red-500 border border-red-200 rounded px-2 py-1 hover:bg-red-50 mt-1"
           onClick={() => window.confirm('Clear all vacation days for this year?') && onReset()}
