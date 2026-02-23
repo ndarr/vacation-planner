@@ -1,0 +1,48 @@
+import { eachDayOfInterval, parseISO, differenceInCalendarDays } from 'date-fns'
+import { format } from 'date-fns'
+import type { Period } from '../types'
+
+function isWeekend(date: Date): boolean {
+  return date.getDay() === 0 || date.getDay() === 6
+}
+
+function isNonWorkingDay(date: Date, holidays: Set<string>): boolean {
+  return isWeekend(date) || holidays.has(format(date, 'yyyy-MM-dd'))
+}
+
+function gapIsNonWorking(from: string, to: string, holidays: Set<string>): boolean {
+  const days = eachDayOfInterval({ start: parseISO(from), end: parseISO(to) })
+  const gapDays = days.slice(1, -1)
+  return gapDays.every(day => isNonWorkingDay(day, holidays))
+}
+
+function buildPeriod(vacationDays: string[], start: number, end: number): Period {
+  const startDate = vacationDays[start]
+  const endDate = vacationDays[end]
+
+  return {
+    start: startDate,
+    end: endDate,
+    workingDays: end - start + 1,
+    calendarDays: differenceInCalendarDays(parseISO(endDate), parseISO(startDate)) + 1,
+  }
+}
+
+export function computePeriods(vacationDays: string[], holidays: Set<string>): Period[] {
+  if (vacationDays.length === 0) return []
+
+  const sorted = [...vacationDays].sort()
+  const periods: Period[] = []
+  let periodStart = 0
+
+  for (let i = 1; i < sorted.length; i++) {
+    const belongsToSamePeriod = gapIsNonWorking(sorted[i - 1], sorted[i], holidays)
+    if (!belongsToSamePeriod) {
+      periods.push(buildPeriod(sorted, periodStart, i - 1))
+      periodStart = i
+    }
+  }
+
+  periods.push(buildPeriod(sorted, periodStart, sorted.length - 1))
+  return periods
+}
