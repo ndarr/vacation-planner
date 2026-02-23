@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import { CalendarGrid } from './components/CalendarGrid'
+import { BudgetTracker } from './components/BudgetTracker'
 import { getHolidays } from './utils/holidays'
 import { useVacationStore } from './hooks/useVacationStore'
 
@@ -10,14 +11,19 @@ function App() {
   const vacationDays = useMemo(() => new Set(store.vacationDays), [store.vacationDays])
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <h1 className="text-2xl font-bold text-gray-800 mb-8">Vacation Planner</h1>
-      <CalendarGrid
-        year={year}
-        holidays={holidays}
-        vacationDays={vacationDays}
-        onToggleDay={toggleDay}
-      />
+    <div className="min-h-screen bg-gray-50 flex">
+      <main className="flex-1 p-8 overflow-auto">
+        <h1 className="text-2xl font-bold text-gray-800 mb-8">Vacation Planner {year}</h1>
+        <CalendarGrid
+          year={year}
+          holidays={holidays}
+          vacationDays={vacationDays}
+          onToggleDay={toggleDay}
+        />
+      </main>
+      <aside className="w-72 border-l border-gray-200 p-6 flex flex-col gap-4 bg-white">
+        <BudgetTracker allowance={store.allowance} usedDays={store.vacationDays.length} />
+      </aside>
     </div>
   )
 }
