@@ -57,12 +57,17 @@ function App() {
         </div>
         <PeriodsPanel periods={periods} />
         <HolidaysPanel holidays={holidays} />
+        <button
+          className="w-full text-sm text-red-500 border border-red-200 rounded px-2 py-1 hover:bg-red-50"
+          onClick={() => window.confirm('Clear all vacation days for this year?') && resetDays()}
+        >
+          Reset year
+        </button>
         <SettingsPanel
           settings={settings}
           allowance={store.allowance}
           onUpdateSettings={updateSettings}
           onUpdateAllowance={setAllowance}
-          onReset={resetDays}
         />
       </aside>
     </div>

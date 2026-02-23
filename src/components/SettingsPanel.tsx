@@ -7,10 +7,9 @@ interface Props {
   allowance: number
   onUpdateSettings: (patch: Partial<Settings>) => void
   onUpdateAllowance: (allowance: number) => void
-  onReset: () => void
 }
 
-export function SettingsPanel({ settings, allowance, onUpdateSettings, onUpdateAllowance, onReset }: Props) {
+export function SettingsPanel({ settings, allowance, onUpdateSettings, onUpdateAllowance }: Props) {
   const [expanded, setExpanded] = useState(false)
   const countries = useMemo(getSupportedCountries, [])
 
@@ -22,13 +21,6 @@ export function SettingsPanel({ settings, allowance, onUpdateSettings, onUpdateA
       >
         <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide">Settings</h2>
         <span className="text-gray-400 text-xs">{expanded ? '▲' : '▼'}</span>
-      </button>
-
-      <button
-        className="w-full text-sm text-red-500 border border-red-200 rounded px-2 py-1 hover:bg-red-50 mt-3"
-        onClick={() => window.confirm('Clear all vacation days for this year?') && onReset()}
-      >
-        Reset year
       </button>
 
       {expanded && (
