@@ -7,6 +7,7 @@ interface Props {
   allowance: number
   onUpdateSettings: (patch: Partial<Settings>) => void
   onUpdateAllowance: (allowance: number) => void
+  onReset: () => void
 }
 
 function yearOptions(): number[] {
@@ -14,7 +15,7 @@ function yearOptions(): number[] {
   return [current - 1, current, current + 1, current + 2]
 }
 
-export function SettingsPanel({ settings, allowance, onUpdateSettings, onUpdateAllowance }: Props) {
+export function SettingsPanel({ settings, allowance, onUpdateSettings, onUpdateAllowance, onReset }: Props) {
   const countries = useMemo(getSupportedCountries, [])
 
   return (
@@ -59,6 +60,12 @@ export function SettingsPanel({ settings, allowance, onUpdateSettings, onUpdateA
             ))}
           </select>
         </label>
+        <button
+          className="w-full text-sm text-red-500 border border-red-200 rounded px-2 py-1 hover:bg-red-50 mt-1"
+          onClick={() => window.confirm('Clear all vacation days for this year?') && onReset()}
+        >
+          Reset year
+        </button>
       </div>
     </div>
   )

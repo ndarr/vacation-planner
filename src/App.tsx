@@ -11,7 +11,7 @@ import { useVacationStore } from './hooks/useVacationStore'
 
 function App() {
   const { settings, update: updateSettings } = useSettings()
-  const { store, toggleDay, setAllowance } = useVacationStore(settings.year)
+  const { store, toggleDay, setAllowance, resetDays } = useVacationStore(settings.year)
 
   const holidays = useMemo(
     () => getHolidays(settings.year, settings.country, settings.region),
@@ -42,6 +42,7 @@ function App() {
           allowance={store.allowance}
           onUpdateSettings={updateSettings}
           onUpdateAllowance={setAllowance}
+          onReset={resetDays}
         />
       </aside>
     </div>

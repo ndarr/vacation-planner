@@ -48,5 +48,9 @@ export function useVacationStore(year: number) {
     persist({ ...store, allowance })
   }
 
-  return { store, toggleDay, setAllowance }
+  function resetDays() {
+    persist({ ...store, vacationDays: [] })
+  }
+
+  return { store, toggleDay, setAllowance, resetDays }
 }
