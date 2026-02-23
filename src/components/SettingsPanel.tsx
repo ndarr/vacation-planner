@@ -24,6 +24,13 @@ export function SettingsPanel({ settings, allowance, onUpdateSettings, onUpdateA
         <span className="text-gray-400 text-xs">{expanded ? '▲' : '▼'}</span>
       </button>
 
+      <button
+        className="w-full text-sm text-red-500 border border-red-200 rounded px-2 py-1 hover:bg-red-50 mt-3"
+        onClick={() => window.confirm('Clear all vacation days for this year?') && onReset()}
+      >
+        Reset year
+      </button>
+
       {expanded && (
         <div className="flex flex-col gap-3 mt-3">
           <label className="flex flex-col gap-1">
@@ -52,13 +59,6 @@ export function SettingsPanel({ settings, allowance, onUpdateSettings, onUpdateA
           </label>
         </div>
       )}
-
-      <button
-        className="w-full text-sm text-red-500 border border-red-200 rounded px-2 py-1 hover:bg-red-50 mt-3"
-        onClick={() => window.confirm('Clear all vacation days for this year?') && onReset()}
-      >
-        Reset year
-      </button>
     </div>
   )
 }
