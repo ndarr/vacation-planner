@@ -46,6 +46,18 @@ App
 
 `DayCell` only receives non-null days. Null grid padding cells are rendered as empty `<div>`s in `MonthCalendar`.
 
+### Responsive layout
+
+Tailwind breakpoints drive all responsive behaviour — no JS involved.
+
+| Breakpoint | Layout | Calendar columns | Day cell size |
+|---|---|---|---|
+| Mobile (default) | Stacked, single scroll | 1 | `h-9 w-9` |
+| Tablet (`sm`) | Stacked, single scroll | 2 | `h-8 w-8` |
+| Desktop (`lg+`) | Side-by-side, sidebar scrolls independently | 3 | `h-8 w-8` |
+
+The outer container switches from `min-h-screen flex-col` (mobile) to `h-screen flex-row overflow-hidden` (desktop). The sidebar switches from `w-full border-t` (mobile) to `w-72 border-l` (desktop).
+
 ### localStorage keys
 
 | Key | Contents |
