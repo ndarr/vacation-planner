@@ -1,4 +1,4 @@
-import { eachDayOfInterval, parseISO, differenceInCalendarDays } from 'date-fns'
+import { eachDayOfInterval, parseISO, differenceInCalendarDays, addDays, subDays } from 'date-fns'
 import { format } from 'date-fns'
 import type { Period } from '../types'
 
@@ -16,15 +16,31 @@ function gapIsNonWorking(from: string, to: string, holidays: Set<string>): boole
   return gapDays.every(day => isNonWorkingDay(day, holidays))
 }
 
-function buildPeriod(vacationDays: string[], start: number, end: number): Period {
-  const startDate = vacationDays[start]
-  const endDate = vacationDays[end]
+function extendedStart(vacationStart: string, holidays: Set<string>): string {
+  let date = subDays(parseISO(vacationStart), 1)
+  while (isNonWorkingDay(date, holidays)) {
+    date = subDays(date, 1)
+  }
+  return format(addDays(date, 1), 'yyyy-MM-dd')
+}
+
+function extendedEnd(vacationEnd: string, holidays: Set<string>): string {
+  let date = addDays(parseISO(vacationEnd), 1)
+  while (isNonWorkingDay(date, holidays)) {
+    date = addDays(date, 1)
+  }
+  return format(subDays(date, 1), 'yyyy-MM-dd')
+}
+
+function buildPeriod(vacationDays: string[], start: number, end: number, holidays: Set<string>): Period {
+  const displayStart = extendedStart(vacationDays[start], holidays)
+  const displayEnd = extendedEnd(vacationDays[end], holidays)
 
   return {
-    start: startDate,
-    end: endDate,
+    start: displayStart,
+    end: displayEnd,
     workingDays: end - start + 1,
-    calendarDays: differenceInCalendarDays(parseISO(endDate), parseISO(startDate)) + 1,
+    calendarDays: differenceInCalendarDays(parseISO(displayEnd), parseISO(displayStart)) + 1,
   }
 }
 
@@ -38,11 +54,11 @@ export function computePeriods(vacationDays: string[], holidays: Set<string>): P
   for (let i = 1; i < sorted.length; i++) {
     const belongsToSamePeriod = gapIsNonWorking(sorted[i - 1], sorted[i], holidays)
     if (!belongsToSamePeriod) {
-      periods.push(buildPeriod(sorted, periodStart, i - 1))
+      periods.push(buildPeriod(sorted, periodStart, i - 1, holidays))
       periodStart = i
     }
   }
 
-  periods.push(buildPeriod(sorted, periodStart, sorted.length - 1))
+  periods.push(buildPeriod(sorted, periodStart, sorted.length - 1, holidays))
   return periods
 }
