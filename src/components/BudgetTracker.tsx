@@ -1,11 +1,11 @@
 interface Props {
   allowance: number
   usedDays: number
+  compact?: boolean
 }
 
-function ProgressBar({ used, total }: { used: number; total: number }) {
+function ProgressBar({ used, total, isOverBudget }: { used: number; total: number; isOverBudget: boolean }) {
   const percent = total === 0 ? 0 : Math.min((used / total) * 100, 100)
-  const isOverBudget = used > total
 
   return (
     <div className="w-full bg-gray-200 rounded-full h-2">
@@ -17,7 +17,28 @@ function ProgressBar({ used, total }: { used: number; total: number }) {
   )
 }
 
-export function BudgetTracker({ allowance, usedDays }: Props) {
+function CompactBudgetTracker({ allowance, usedDays }: Props) {
+  const remaining = allowance - usedDays
+  const isOverBudget = remaining < 0
+
+  return (
+    <div className="flex items-center gap-3">
+      <div className="flex-1">
+        <ProgressBar used={usedDays} total={allowance} isOverBudget={isOverBudget} />
+      </div>
+      <span className="text-sm text-gray-500 whitespace-nowrap">
+        {usedDays} / {allowance} days
+      </span>
+      <span className={`text-sm font-semibold whitespace-nowrap ${isOverBudget ? 'text-red-500' : 'text-blue-600'}`}>
+        {isOverBudget ? `${Math.abs(remaining)}d over` : `${remaining}d left`}
+      </span>
+    </div>
+  )
+}
+
+export function BudgetTracker({ allowance, usedDays, compact }: Props) {
+  if (compact) return <CompactBudgetTracker allowance={allowance} usedDays={usedDays} />
+
   const remaining = allowance - usedDays
   const isOverBudget = remaining < 0
 
@@ -28,7 +49,7 @@ export function BudgetTracker({ allowance, usedDays }: Props) {
         <span>{usedDays} used</span>
         <span>{allowance} total</span>
       </div>
-      <ProgressBar used={usedDays} total={allowance} />
+      <ProgressBar used={usedDays} total={allowance} isOverBudget={isOverBudget} />
       <p className={`mt-2 text-sm font-medium ${isOverBudget ? 'text-red-500' : 'text-gray-700'}`}>
         {isOverBudget ? `${Math.abs(remaining)} days over budget` : `${remaining} days remaining`}
       </p>

@@ -10,10 +10,12 @@ import { getHolidays } from './utils/holidays'
 import { computePeriods } from './utils/periods'
 import { useSettings } from './hooks/useSettings'
 import { useVacationStore } from './hooks/useVacationStore'
+import { useStickyBudget } from './hooks/useStickyBudget'
 
 function App() {
   const { settings, update: updateSettings } = useSettings()
   const { store, toggleDay, setAllowance, resetDays } = useVacationStore(settings.year)
+  const { cardRef, isCardVisible } = useStickyBudget()
 
   const holidays = useMemo(
     () => getHolidays(settings.year, settings.country, settings.region),
@@ -23,8 +25,16 @@ function App() {
   const vacationDays = useMemo(() => new Set(store.vacationDays), [store.vacationDays])
   const periods = useMemo(() => computePeriods(store.vacationDays, holidaySet), [store.vacationDays, holidaySet])
 
+  const budgetProps = { allowance: store.allowance, usedDays: store.vacationDays.length }
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col lg:h-screen lg:flex-row lg:overflow-hidden">
+
+      {/* Fixed bottom budget bar — mobile only, visible while card is out of view */}
+      <div className={`lg:hidden fixed bottom-0 left-0 right-0 z-20 bg-white border-t border-gray-200 px-6 py-3 transition-transform duration-300 ${isCardVisible ? 'translate-y-full' : 'translate-y-0'}`}>
+        <BudgetTracker {...budgetProps} compact />
+      </div>
+
       <main className="flex-1 p-6 lg:p-8 lg:overflow-auto">
         <div className="mb-6">
           <div className="flex items-center justify-between mb-3">
@@ -40,8 +50,11 @@ function App() {
           onToggleDay={toggleDay}
         />
       </main>
-      <aside className="w-full lg:w-72 border-t lg:border-t-0 lg:border-l border-gray-200 p-6 flex flex-col gap-4 bg-white lg:overflow-y-auto">
-        <BudgetTracker allowance={store.allowance} usedDays={store.vacationDays.length} />
+
+      <aside className="w-full lg:w-72 border-t lg:border-t-0 lg:border-l border-gray-200 p-6 flex flex-col gap-4 bg-white lg:overflow-y-auto pb-16 lg:pb-6">
+        <div ref={cardRef}>
+          <BudgetTracker {...budgetProps} />
+        </div>
         <PeriodsPanel periods={periods} />
         <HolidaysPanel holidays={holidays} />
         <SettingsPanel
