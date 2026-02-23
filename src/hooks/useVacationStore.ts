@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import type { YearStore } from '../types'
 
 const DEFAULT_ALLOWANCE = 25
@@ -30,6 +30,10 @@ export function useVacationStore(year: number) {
   const [store, setStore] = useState<YearStore>(
     () => readFromStorage(year) ?? defaultStore()
   )
+
+  useEffect(() => {
+    setStore(readFromStorage(year) ?? defaultStore())
+  }, [year])
 
   function persist(next: YearStore) {
     writeToStorage(year, next)
