@@ -1,0 +1,19 @@
+export type DayType = 'workday' | 'vacation' | 'holiday' | 'weekend'
+
+export interface Settings {
+  year: number
+  country: string
+  region?: string
+}
+
+export interface YearStore {
+  allowance: number
+  vacationDays: string[] // ISO dates "YYYY-MM-DD"
+}
+
+export interface Period {
+  start: string // ISO date
+  end: string   // ISO date
+  workingDays: number
+  calendarDays: number
+}
