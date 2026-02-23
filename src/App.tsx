@@ -21,10 +21,10 @@ function App() {
   const periods = useMemo(() => computePeriods(store.vacationDays, holidays), [store.vacationDays, holidays])
 
   return (
-    <div className="h-screen bg-gray-50 flex overflow-hidden">
-      <main className="flex-1 p-8 overflow-auto">
-        <div className="flex items-baseline justify-between mb-6">
-          <h1 className="text-2xl font-bold text-gray-800">Vacation Planner {settings.year}</h1>
+    <div className="min-h-screen bg-gray-50 flex flex-col lg:h-screen lg:flex-row lg:overflow-hidden">
+      <main className="flex-1 p-6 lg:p-8 lg:overflow-auto">
+        <div className="mb-6">
+          <h1 className="text-2xl font-bold text-gray-800 mb-3">Vacation Planner {settings.year}</h1>
           <Legend />
         </div>
         <CalendarGrid
@@ -34,7 +34,7 @@ function App() {
           onToggleDay={toggleDay}
         />
       </main>
-      <aside className="w-72 border-l border-gray-200 p-6 flex flex-col gap-4 bg-white overflow-y-auto">
+      <aside className="w-full lg:w-72 border-t lg:border-t-0 lg:border-l border-gray-200 p-6 flex flex-col gap-4 bg-white lg:overflow-y-auto">
         <BudgetTracker allowance={store.allowance} usedDays={store.vacationDays.length} />
         <PeriodsPanel periods={periods} />
         <SettingsPanel

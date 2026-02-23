@@ -18,7 +18,7 @@ const isTogglable = (type: DayType) => type === 'workday' || type === 'vacation'
 export function DayCell({ day, onToggle }: Props) {
   return (
     <div
-      className={`flex items-center justify-center rounded text-sm h-8 w-8 ${typeStyles[day.type]}`}
+      className={`flex items-center justify-center rounded text-sm h-9 w-9 sm:h-8 sm:w-8 ${typeStyles[day.type]}`}
       onClick={() => isTogglable(day.type) && onToggle(day.date)}
     >
       {day.dayOfMonth}
