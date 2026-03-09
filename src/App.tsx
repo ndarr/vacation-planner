@@ -14,7 +14,7 @@ import { useStickyBudget } from './hooks/useStickyBudget'
 
 function App() {
   const { settings, update: updateSettings } = useSettings()
-  const { store, toggleDay, setAllowance, resetDays } = useVacationStore(settings.year)
+  const { store, toggleDay, setAllowance, removeDays, resetDays } = useVacationStore(settings.year)
   const { cardRef, isCardVisible } = useStickyBudget()
 
   const holidays = useMemo(
@@ -55,7 +55,7 @@ function App() {
         <div ref={cardRef}>
           <BudgetTracker {...budgetProps} />
         </div>
-        <PeriodsPanel periods={periods} />
+        <PeriodsPanel periods={periods} onDeletePeriod={period => removeDays(period.dates)} />
         <HolidaysPanel holidays={holidays} />
         <button
           className="w-full text-sm text-red-500 border border-red-200 rounded px-2 py-1 hover:bg-red-50"

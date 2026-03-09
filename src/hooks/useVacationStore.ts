@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { format } from 'date-fns'
 import type { YearStore } from '../types'
 
 const DEFAULT_ALLOWANCE = 25
@@ -48,9 +49,14 @@ export function useVacationStore(year: number) {
     persist({ ...store, allowance })
   }
 
+  function removeDays(dates: Date[]) {
+    const toRemove = new Set(dates.map(d => format(d, 'yyyy-MM-dd')))
+    persist({ ...store, vacationDays: store.vacationDays.filter(d => !toRemove.has(d)) })
+  }
+
   function resetDays() {
     persist({ ...store, vacationDays: [] })
   }
 
-  return { store, toggleDay, setAllowance, resetDays }
+  return { store, toggleDay, setAllowance, removeDays, resetDays }
 }

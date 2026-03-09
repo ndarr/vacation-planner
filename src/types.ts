@@ -17,8 +17,9 @@ export interface Holiday {
 }
 
 export interface Period {
-  start: string // ISO date
-  end: string   // ISO date
+  start: Date
+  end: Date
+  dates: Date[]  // actual vacation days within this period
   workingDays: number
   calendarDays: number
 }

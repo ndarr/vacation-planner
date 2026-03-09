@@ -16,31 +16,33 @@ function gapIsNonWorking(from: string, to: string, holidays: Set<string>): boole
   return gapDays.every(day => isNonWorkingDay(day, holidays))
 }
 
-function extendedStart(vacationStart: string, holidays: Set<string>): string {
+function extendedStart(vacationStart: string, holidays: Set<string>): Date {
   let date = subDays(parseISO(vacationStart), 1)
   while (isNonWorkingDay(date, holidays)) {
     date = subDays(date, 1)
   }
-  return format(addDays(date, 1), 'yyyy-MM-dd')
+  return addDays(date, 1)
 }
 
-function extendedEnd(vacationEnd: string, holidays: Set<string>): string {
+function extendedEnd(vacationEnd: string, holidays: Set<string>): Date {
   let date = addDays(parseISO(vacationEnd), 1)
   while (isNonWorkingDay(date, holidays)) {
     date = addDays(date, 1)
   }
-  return format(subDays(date, 1), 'yyyy-MM-dd')
+  return subDays(date, 1)
 }
 
 function buildPeriod(vacationDays: string[], start: number, end: number, holidays: Set<string>): Period {
   const displayStart = extendedStart(vacationDays[start], holidays)
   const displayEnd = extendedEnd(vacationDays[end], holidays)
+  const dates = vacationDays.slice(start, end + 1).map(d => parseISO(d))
 
   return {
     start: displayStart,
     end: displayEnd,
+    dates,
     workingDays: end - start + 1,
-    calendarDays: differenceInCalendarDays(parseISO(displayEnd), parseISO(displayStart)) + 1,
+    calendarDays: differenceInCalendarDays(displayEnd, displayStart) + 1,
   }
 }
 

@@ -1,16 +1,17 @@
-import { format, parseISO } from 'date-fns'
+import { format } from 'date-fns'
 import type { Period } from '../types'
 
 interface Props {
   periods: Period[]
+  onDeletePeriod: (period: Period) => void
 }
 
-function formatDate(iso: string): string {
-  return format(parseISO(iso), 'MMM d')
+function formatDate(date: Date): string {
+  return format(date, 'MMM d')
 }
 
-function PeriodRow({ period }: { period: Period }) {
-  const isSingleDay = period.start === period.end
+function PeriodRow({ period, onDelete }: { period: Period; onDelete: () => void }) {
+  const isSingleDay = period.start.getTime() === period.end.getTime()
   const dateLabel = isSingleDay
     ? formatDate(period.start)
     : `${formatDate(period.start)} – ${formatDate(period.end)}`
@@ -21,14 +22,21 @@ function PeriodRow({ period }: { period: Period }) {
         <p className="text-sm font-medium text-gray-800">{dateLabel}</p>
         <p className="text-xs text-gray-400">{period.calendarDays} calendar days</p>
       </div>
-      <span className="text-sm font-semibold text-blue-600">
-        {period.workingDays}d
-      </span>
+      <button
+        onClick={onDelete}
+        className="group w-8 h-8 flex items-center justify-center rounded hover:bg-red-50 transition-colors"
+        title="Delete this trip"
+      >
+        <span className="text-sm font-semibold text-blue-600 group-hover:hidden">
+          {period.workingDays}d
+        </span>
+        <span className="hidden text-red-400 text-xs group-hover:block">✕</span>
+      </button>
     </div>
   )
 }
 
-export function PeriodsPanel({ periods }: Props) {
+export function PeriodsPanel({ periods, onDeletePeriod }: Props) {
   return (
     <div className="bg-white rounded-xl p-4 shadow-sm">
       <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
@@ -37,7 +45,13 @@ export function PeriodsPanel({ periods }: Props) {
       {periods.length === 0 ? (
         <p className="text-sm text-gray-400">No vacation days planned yet.</p>
       ) : (
-        periods.map(period => <PeriodRow key={period.start} period={period} />)
+        periods.map(period => (
+          <PeriodRow
+            key={period.start.toISOString()}
+            period={period}
+            onDelete={() => onDeletePeriod(period)}
+          />
+        ))
       )}
     </div>
   )
