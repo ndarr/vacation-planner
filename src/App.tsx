@@ -41,7 +41,7 @@ function App() {
   const budgetProps = { allowance: store.allowance, usedDays: store.vacationDays.length }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col lg:h-screen lg:flex-row lg:overflow-hidden">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col lg:h-screen lg:flex-row lg:overflow-hidden" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
 
       {/* Fixed bottom budget bar — mobile only, visible while card is out of view */}
       <div
