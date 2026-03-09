@@ -90,9 +90,9 @@ export function SettingsModal({ settings, allowance, onUpdateSettings, onUpdateA
           <label className="flex flex-col gap-1.5">
             <span className="text-xs font-medium text-gray-500 dark:text-gray-400">Vacation days allowance</span>
             <input
-              type="number"
-              min={0}
-              max={365}
+              type="text"
+              inputMode="numeric"
+              pattern="[0-9]*"
               className="text-sm border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
               value={allowanceInput}
               onChange={e => setAllowanceInput(e.target.value)}
