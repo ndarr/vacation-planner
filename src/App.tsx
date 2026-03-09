@@ -8,6 +8,7 @@ import { Legend } from './components/Legend'
 import { YearSelector } from './components/YearSelector'
 import { getHolidays } from './utils/holidays'
 import { computePeriods } from './utils/periods'
+import { exportToICS } from './utils/export'
 import { useSettings } from './hooks/useSettings'
 import { useVacationStore } from './hooks/useVacationStore'
 import { useStickyBudget } from './hooks/useStickyBudget'
@@ -78,7 +79,7 @@ function App() {
         <div ref={cardRef}>
           <BudgetTracker {...budgetProps} />
         </div>
-        <PeriodsPanel periods={periods} onDeletePeriod={period => removeDays(period.dates)} />
+        <PeriodsPanel periods={periods} onDeletePeriod={period => removeDays(period.dates)} onExport={() => exportToICS(periods, settings.year)} />
         <HolidaysPanel holidays={holidays} />
         <button
           className="w-full text-sm text-red-500 border border-red-200 dark:border-red-800 rounded px-2 py-1 hover:bg-red-50 dark:hover:bg-red-900/20"

@@ -4,6 +4,7 @@ import type { Period } from '../types'
 interface Props {
   periods: Period[]
   onDeletePeriod: (period: Period) => void
+  onExport: () => void
 }
 
 function formatDate(date: Date): string {
@@ -36,12 +37,28 @@ function PeriodRow({ period, onDelete }: { period: Period; onDelete: () => void 
   )
 }
 
-export function PeriodsPanel({ periods, onDeletePeriod }: Props) {
+export function PeriodsPanel({ periods, onDeletePeriod, onExport }: Props) {
   return (
     <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm">
-      <h2 className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-3">
-        Planned Trips
-      </h2>
+      <div className="flex items-center justify-between mb-3">
+        <h2 className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+          Planned Trips
+        </h2>
+        {periods.length > 0 && (
+          <button
+            onClick={onExport}
+            title="Export to calendar (.ics)"
+            className="flex items-center gap-1 text-xs text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
+          >
+            <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            .ics
+          </button>
+        )}
+      </div>
       {periods.length === 0 ? (
         <p className="text-sm text-gray-400 dark:text-gray-500">No vacation days planned yet.</p>
       ) : (
