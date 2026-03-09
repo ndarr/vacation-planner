@@ -44,7 +44,10 @@ function App() {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col lg:h-screen lg:flex-row lg:overflow-hidden">
 
       {/* Fixed bottom budget bar — mobile only, visible while card is out of view */}
-      <div className={`lg:hidden fixed bottom-0 left-0 right-0 z-20 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 px-6 py-3 transition-transform duration-300 ${isCardVisible ? 'translate-y-full' : 'translate-y-0'}`}>
+      <div
+        className={`lg:hidden fixed bottom-0 left-0 right-0 z-20 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 px-6 pt-3 transition-transform duration-300 ${isCardVisible ? 'translate-y-full' : 'translate-y-0'}`}
+        style={{ paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom))' }}
+      >
         <BudgetTracker {...budgetProps} compact />
       </div>
 
