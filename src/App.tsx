@@ -48,6 +48,7 @@ function App() {
       </div>
 
       <main className="flex-1 p-6 lg:p-8 lg:overflow-auto">
+        <div className="max-w-4xl mx-auto">
         <div className="mb-6">
           <div className="flex items-center justify-between mb-3">
             <h1 className="text-lg font-semibold text-gray-500 dark:text-gray-400">Vacation Planner</h1>
@@ -70,6 +71,7 @@ function App() {
           vacationDays={vacationDays}
           onToggleDay={toggleDay}
         />
+        </div>
       </main>
 
       <aside className="w-full lg:w-72 border-t lg:border-t-0 lg:border-l border-gray-200 dark:border-gray-700 p-6 flex flex-col gap-4 bg-white dark:bg-gray-800 lg:overflow-y-auto pb-16 lg:pb-6">
