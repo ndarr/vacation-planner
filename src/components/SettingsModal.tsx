@@ -44,15 +44,15 @@ const THEME_OPTIONS: { value: Theme; label: string; Icon: () => JSX.Element }[] 
 
 function ThemeToggle({ theme, onChange }: { theme: Theme; onChange: (t: Theme) => void }) {
   return (
-    <div className="flex rounded-lg border border-gray-200 dark:border-gray-600 overflow-hidden">
+    <div className="flex rounded-lg bg-gray-100 dark:bg-gray-700/60 p-0.5 gap-0.5">
       {THEME_OPTIONS.map(({ value, label, Icon }) => (
         <button
           key={value}
           onClick={() => onChange(value)}
-          className={`flex-1 flex items-center justify-center gap-1.5 py-2 text-xs transition-colors ${
+          className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 text-xs rounded-md transition-colors ${
             theme === value
-              ? 'bg-blue-500 text-white'
-              : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700'
+              ? 'bg-white dark:bg-gray-600 text-gray-800 dark:text-gray-100 shadow-sm'
+              : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
           }`}
         >
           <Icon />
