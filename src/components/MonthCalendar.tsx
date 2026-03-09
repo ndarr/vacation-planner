@@ -11,10 +11,10 @@ interface Props {
 export function MonthCalendar({ month, onToggleDay }: Props) {
   return (
     <div>
-      <h3 className="text-sm font-semibold text-gray-700 mb-2">{month.label}</h3>
+      <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">{month.label}</h3>
       <div className="grid grid-cols-7 gap-1 mb-1">
         {WEEKDAY_LABELS.map(label => (
-          <div key={label} className="text-xs text-center text-gray-400 font-medium">
+          <div key={label} className="text-xs text-center text-gray-400 dark:text-gray-500 font-medium">
             {label}
           </div>
         ))}

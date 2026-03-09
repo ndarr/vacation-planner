@@ -8,7 +8,7 @@ function ProgressBar({ used, total, isOverBudget }: { used: number; total: numbe
   const percent = total === 0 ? 0 : Math.min((used / total) * 100, 100)
 
   return (
-    <div className="w-full bg-gray-200 rounded-full h-2">
+    <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
       <div
         className={`h-2 rounded-full transition-all ${isOverBudget ? 'bg-red-500' : 'bg-blue-500'}`}
         style={{ width: `${percent}%` }}
@@ -26,10 +26,10 @@ function CompactBudgetTracker({ allowance, usedDays }: Props) {
       <div className="flex-1">
         <ProgressBar used={usedDays} total={allowance} isOverBudget={isOverBudget} />
       </div>
-      <span className="text-sm text-gray-500 whitespace-nowrap">
+      <span className="text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap">
         {usedDays} / {allowance} days
       </span>
-      <span className={`text-sm font-semibold whitespace-nowrap ${isOverBudget ? 'text-red-500' : 'text-blue-600'}`}>
+      <span className={`text-sm font-semibold whitespace-nowrap ${isOverBudget ? 'text-red-500' : 'text-blue-600 dark:text-blue-400'}`}>
         {isOverBudget ? `${Math.abs(remaining)}d over` : `${remaining}d left`}
       </span>
     </div>
@@ -43,14 +43,14 @@ export function BudgetTracker({ allowance, usedDays, compact }: Props) {
   const isOverBudget = remaining < 0
 
   return (
-    <div className="bg-white rounded-xl p-4 shadow-sm">
-      <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">Budget</h2>
-      <div className="flex justify-between text-sm text-gray-600 mb-2">
+    <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm">
+      <h2 className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-3">Budget</h2>
+      <div className="flex justify-between text-sm text-gray-600 dark:text-gray-300 mb-2">
         <span>{usedDays} used</span>
         <span>{allowance} total</span>
       </div>
       <ProgressBar used={usedDays} total={allowance} isOverBudget={isOverBudget} />
-      <p className={`mt-2 text-sm font-medium ${isOverBudget ? 'text-red-500' : 'text-gray-700'}`}>
+      <p className={`mt-2 text-sm font-medium ${isOverBudget ? 'text-red-500' : 'text-gray-700 dark:text-gray-200'}`}>
         {isOverBudget ? `${Math.abs(remaining)} days over budget` : `${remaining} days remaining`}
       </p>
     </div>

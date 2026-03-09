@@ -6,6 +6,7 @@ const STORAGE_KEY = 'vp-settings'
 const DEFAULT_SETTINGS: Settings = {
   year: new Date().getFullYear(),
   country: 'DE',
+  theme: 'system',
 }
 
 function load(): Settings {

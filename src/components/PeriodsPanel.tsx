@@ -17,17 +17,17 @@ function PeriodRow({ period, onDelete }: { period: Period; onDelete: () => void 
     : `${formatDate(period.start)} – ${formatDate(period.end)}`
 
   return (
-    <div className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">
+    <div className="flex items-center justify-between py-2 border-b border-gray-100 dark:border-gray-700 last:border-0">
       <div>
-        <p className="text-sm font-medium text-gray-800">{dateLabel}</p>
-        <p className="text-xs text-gray-400">{period.calendarDays} calendar days</p>
+        <p className="text-sm font-medium text-gray-800 dark:text-gray-100">{dateLabel}</p>
+        <p className="text-xs text-gray-400 dark:text-gray-500">{period.calendarDays} calendar days</p>
       </div>
       <button
         onClick={onDelete}
-        className="group w-8 h-8 flex items-center justify-center rounded hover:bg-red-50 transition-colors"
+        className="group w-8 h-8 flex items-center justify-center rounded hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
         title="Delete this trip"
       >
-        <span className="text-sm font-semibold text-blue-600 group-hover:hidden">
+        <span className="text-sm font-semibold text-blue-600 dark:text-blue-400 group-hover:hidden">
           {period.workingDays}d
         </span>
         <span className="hidden text-red-400 text-xs group-hover:block">✕</span>
@@ -38,12 +38,12 @@ function PeriodRow({ period, onDelete }: { period: Period; onDelete: () => void 
 
 export function PeriodsPanel({ periods, onDeletePeriod }: Props) {
   return (
-    <div className="bg-white rounded-xl p-4 shadow-sm">
-      <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
+    <div className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm">
+      <h2 className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-3">
         Planned Trips
       </h2>
       {periods.length === 0 ? (
-        <p className="text-sm text-gray-400">No vacation days planned yet.</p>
+        <p className="text-sm text-gray-400 dark:text-gray-500">No vacation days planned yet.</p>
       ) : (
         periods.map(period => (
           <PeriodRow

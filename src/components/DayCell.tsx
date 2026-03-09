@@ -7,10 +7,10 @@ interface Props {
 }
 
 const typeStyles: Record<DayType, string> = {
-  workday: 'text-gray-800 hover:bg-blue-50 cursor-pointer',
+  workday: 'text-gray-800 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer',
   vacation: 'bg-blue-500 text-white font-semibold cursor-pointer',
-  holiday: 'bg-red-100 text-red-500 cursor-default',
-  weekend: 'text-gray-300 cursor-default',
+  holiday: 'bg-red-100 dark:bg-red-900/30 text-red-500 dark:text-red-400 cursor-default',
+  weekend: 'text-gray-300 dark:text-gray-600 cursor-default',
 }
 
 const isTogglable = (type: DayType) => type === 'workday' || type === 'vacation'

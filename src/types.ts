@@ -1,9 +1,12 @@
 export type DayType = 'workday' | 'vacation' | 'holiday' | 'weekend'
 
+export type Theme = 'light' | 'system' | 'dark'
+
 export interface Settings {
   year: number
   country: string
   region?: string
+  theme: Theme
 }
 
 export interface YearStore {
