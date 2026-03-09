@@ -81,10 +81,10 @@ export function SettingsModal({ settings, allowance, onUpdateSettings, onUpdateA
         </div>
 
         <div className="flex flex-col gap-4">
-          <label className="flex flex-col gap-1.5">
+          <div className="flex flex-col gap-1.5">
             <span className="text-xs font-medium text-gray-500 dark:text-gray-400">Appearance</span>
             <ThemeToggle theme={settings.theme} onChange={theme => onUpdateSettings({ theme })} />
-          </label>
+          </div>
 
           <label className="flex flex-col gap-1.5">
             <span className="text-xs font-medium text-gray-500 dark:text-gray-400">Vacation days allowance</span>
