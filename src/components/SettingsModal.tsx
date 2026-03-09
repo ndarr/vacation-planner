@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { getSupportedCountries } from '../utils/countries'
 import type { Settings, Theme } from '../types'
 
@@ -65,6 +65,7 @@ function ThemeToggle({ theme, onChange }: { theme: Theme; onChange: (t: Theme) =
 
 export function SettingsModal({ settings, allowance, onUpdateSettings, onUpdateAllowance, onClose }: Props) {
   const countries = useMemo(getSupportedCountries, [])
+  const [allowanceInput, setAllowanceInput] = useState(String(allowance))
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -93,8 +94,14 @@ export function SettingsModal({ settings, allowance, onUpdateSettings, onUpdateA
               min={0}
               max={365}
               className="text-sm border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-              value={allowance}
-              onChange={e => onUpdateAllowance(Number(e.target.value))}
+              value={allowanceInput}
+              onChange={e => setAllowanceInput(e.target.value)}
+              onBlur={() => {
+                const parsed = parseInt(allowanceInput, 10)
+                const value = isNaN(parsed) ? 0 : Math.min(365, Math.max(0, parsed))
+                onUpdateAllowance(value)
+                setAllowanceInput(String(value))
+              }}
             />
           </label>
 
