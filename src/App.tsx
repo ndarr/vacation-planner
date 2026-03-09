@@ -52,18 +52,18 @@ function App() {
         <div className="mb-6">
           <div className="flex items-center justify-between mb-3">
             <h1 className="text-lg font-semibold text-gray-500 dark:text-gray-400">Vacation Planner</h1>
-            <div className="flex items-center gap-3">
-              <Legend />
-              <button
-                onClick={() => setSettingsOpen(true)}
-                className="w-7 h-7 flex items-center justify-center rounded-full text-gray-400 dark:text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-700 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
-                title="Settings"
-              >
-                <GearIcon />
-              </button>
-            </div>
+            <button
+              onClick={() => setSettingsOpen(true)}
+              className="w-7 h-7 flex items-center justify-center rounded-full text-gray-400 dark:text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-700 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+              title="Settings"
+            >
+              <GearIcon />
+            </button>
           </div>
           <YearSelector year={settings.year} onChange={year => updateSettings({ year })} />
+        </div>
+        <div className="mb-4">
+          <Legend />
         </div>
         <CalendarGrid
           year={settings.year}
