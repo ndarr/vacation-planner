@@ -51,7 +51,7 @@ function ThemeToggle({ theme, onChange }: { theme: Theme; onChange: (t: Theme) =
         <button
           key={value}
           onClick={() => onChange(value)}
-          className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 text-xs rounded-md transition-colors ${
+          className={`flex-1 flex items-center justify-center gap-1.5 py-3 sm:py-1.5 text-xs rounded-md transition-colors ${
             theme === value
               ? 'bg-white dark:bg-gray-600 text-gray-800 dark:text-gray-100 shadow-sm'
               : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
@@ -77,14 +77,16 @@ function CustomHolidaysSection({ customHolidays, onChange }: {
   const [adding, setAdding] = useState(false)
   const [newDate, setNewDate] = useState('')
   const [newName, setNewName] = useState('')
+  const [newHalfDay, setNewHalfDay] = useState(false)
 
   function add() {
     if (!newDate || !newName.trim()) return
     const [, month, day] = newDate.split('-')
-    onChange([...customHolidays, { date: `${month}-${day}`, name: newName.trim() }])
+    onChange([...customHolidays, { date: `${month}-${day}`, name: newName.trim(), halfDay: newHalfDay || undefined }])
     setAdding(false)
     setNewDate('')
     setNewName('')
+    setNewHalfDay(false)
   }
 
   return (
@@ -94,7 +96,7 @@ function CustomHolidaysSection({ customHolidays, onChange }: {
         {!adding && (
           <button
             onClick={() => setAdding(true)}
-            className="text-xs text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300"
+            className="text-xs text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300 h-11 sm:h-auto flex items-center"
           >
             + Add
           </button>
@@ -107,12 +109,14 @@ function CustomHolidaysSection({ customHolidays, onChange }: {
 
       {customHolidays.map((h, i) => (
         <div key={i} className="flex items-center justify-between py-0.5">
-          <span className="text-sm text-gray-700 dark:text-gray-300 truncate">{h.name}</span>
+          <span className="text-sm text-gray-700 dark:text-gray-300 truncate">
+            {h.name}{h.halfDay && <span className="ml-1 text-xs text-gray-400">½</span>}
+          </span>
           <div className="flex items-center gap-2 ml-2 shrink-0">
             <span className="text-xs text-gray-400 dark:text-gray-500">{formatMMDD(h.date)}</span>
             <button
               onClick={() => onChange(customHolidays.filter((_, j) => j !== i))}
-              className="text-red-400 hover:text-red-500 text-xs leading-none"
+              className="w-11 h-11 sm:w-auto sm:h-auto flex items-center justify-center text-red-400 hover:text-red-500 text-xs"
             >
               ✕
             </button>
@@ -127,25 +131,34 @@ function CustomHolidaysSection({ customHolidays, onChange }: {
             placeholder="e.g. Christmas Eve"
             value={newName}
             onChange={e => setNewName(e.target.value)}
-            className="text-sm border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+            className="text-sm border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-3 sm:py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
             autoFocus
           />
           <input
             type="date"
             value={newDate}
             onChange={e => setNewDate(e.target.value)}
-            className="text-sm border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+            className="text-sm border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-3 sm:py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
           />
+          <label className="flex items-center gap-2 cursor-pointer select-none">
+            <input
+              type="checkbox"
+              checked={newHalfDay}
+              onChange={e => setNewHalfDay(e.target.checked)}
+              className="rounded"
+            />
+            <span className="text-sm text-gray-600 dark:text-gray-400">Half day</span>
+          </label>
           <div className="flex gap-2">
             <button
               onClick={add}
-              className="flex-1 text-sm bg-blue-500 hover:bg-blue-600 text-white rounded-lg py-1.5 transition-colors"
+              className="flex-1 text-sm bg-blue-500 hover:bg-blue-600 text-white rounded-lg py-3 sm:py-1.5 transition-colors"
             >
               Add
             </button>
             <button
               onClick={() => { setAdding(false); setNewDate(''); setNewName('') }}
-              className="flex-1 text-sm border border-gray-200 dark:border-gray-600 rounded-lg py-1.5 text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+              className="flex-1 text-sm border border-gray-200 dark:border-gray-600 rounded-lg py-3 sm:py-1.5 text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
             >
               Cancel
             </button>
@@ -169,7 +182,7 @@ export function SettingsModal({ settings, allowance, onUpdateSettings, onUpdateA
           <h2 className="text-base font-semibold text-gray-800 dark:text-gray-100">Settings</h2>
           <button
             onClick={onClose}
-            className="w-7 h-7 flex items-center justify-center rounded-full text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+            className="w-11 h-11 sm:w-7 sm:h-7 flex items-center justify-center rounded-full text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
           >
             ✕
           </button>
@@ -187,7 +200,7 @@ export function SettingsModal({ settings, allowance, onUpdateSettings, onUpdateA
               type="text"
               inputMode="numeric"
               pattern="[0-9]*"
-              className="text-sm border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+              className="text-sm border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-3 sm:py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
               value={allowanceInput}
               onChange={e => setAllowanceInput(e.target.value)}
               onBlur={() => {
@@ -202,7 +215,7 @@ export function SettingsModal({ settings, allowance, onUpdateSettings, onUpdateA
           <label className="flex flex-col gap-1.5">
             <span className="text-xs font-medium text-gray-500 dark:text-gray-400">Country</span>
             <select
-              className="text-sm border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+              className="text-sm border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-3 sm:py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
               value={settings.country}
               onChange={e => onUpdateSettings({ country: e.target.value, region: undefined })}
             >
@@ -216,7 +229,7 @@ export function SettingsModal({ settings, allowance, onUpdateSettings, onUpdateA
             <label className="flex flex-col gap-1.5">
               <span className="text-xs font-medium text-gray-500 dark:text-gray-400">Region</span>
               <select
-                className="text-sm border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                className="text-sm border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-3 sm:py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                 value={settings.region ?? ''}
                 onChange={e => onUpdateSettings({ region: e.target.value || undefined })}
               >

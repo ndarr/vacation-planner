@@ -5,14 +5,16 @@ import { buildCalendarYear } from '../utils/calendar'
 interface Props {
   year: number
   holidays: Set<string>
+  halfHolidays: Set<string>
   vacationDays: Set<string>
+  halfDays: Set<string>
   onToggleDay: (date: string) => void
 }
 
-export function CalendarGrid({ year, holidays, vacationDays, onToggleDay }: Props) {
+export function CalendarGrid({ year, holidays, halfHolidays, vacationDays, halfDays, onToggleDay }: Props) {
   const months = useMemo(
-    () => buildCalendarYear(year, holidays, vacationDays),
-    [year, holidays, vacationDays]
+    () => buildCalendarYear(year, holidays, halfHolidays, vacationDays, halfDays),
+    [year, holidays, halfHolidays, vacationDays, halfDays]
   )
 
   return (

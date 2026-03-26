@@ -10,7 +10,8 @@ function storageKey(year: number): string {
 
 function readFromStorage(year: number): YearStore | null {
   const raw = localStorage.getItem(storageKey(year))
-  return raw ? JSON.parse(raw) : null
+  if (!raw) return null
+  return { ...defaultStore(), ...JSON.parse(raw) }
 }
 
 function writeToStorage(year: number, store: YearStore): void {
@@ -18,13 +19,12 @@ function writeToStorage(year: number, store: YearStore): void {
 }
 
 function defaultStore(): YearStore {
-  return { allowance: DEFAULT_ALLOWANCE, vacationDays: [] }
+  return { allowance: DEFAULT_ALLOWANCE, vacationDays: [], halfDays: [], tripNames: {} }
 }
 
-function toggledDays(days: string[], date: string): string[] {
-  return days.includes(date)
-    ? days.filter(d => d !== date)
-    : [...days, date]
+function persist(year: number, next: YearStore, setStore: (s: YearStore) => void) {
+  writeToStorage(year, next)
+  setStore(next)
 }
 
 export function useVacationStore(year: number) {
@@ -36,27 +36,73 @@ export function useVacationStore(year: number) {
     setStore(readFromStorage(year) ?? defaultStore())
   }, [year])
 
-  function persist(next: YearStore) {
-    writeToStorage(year, next)
-    setStore(next)
+  function save(next: YearStore) {
+    persist(year, next, setStore)
   }
 
-  function toggleDay(date: string) {
-    persist({ ...store, vacationDays: toggledDays(store.vacationDays, date) })
+  function toggleDay(date: string, halfOnly = false) {
+    const isFullDay = store.vacationDays.includes(date)
+    const isHalfDay = store.halfDays.includes(date)
+
+    if (halfOnly) {
+      // half-holiday days: only toggle half-vacation on/off
+      if (isHalfDay) {
+        save({ ...store, halfDays: store.halfDays.filter(d => d !== date) })
+      } else {
+        save({
+          ...store,
+          vacationDays: store.vacationDays.filter(d => d !== date),
+          halfDays: [...store.halfDays, date],
+        })
+      }
+      return
+    }
+
+    if (isFullDay) {
+      // full → half
+      save({
+        ...store,
+        vacationDays: store.vacationDays.filter(d => d !== date),
+        halfDays: [...store.halfDays, date],
+      })
+    } else if (isHalfDay) {
+      // half → clear
+      save({ ...store, halfDays: store.halfDays.filter(d => d !== date) })
+    } else {
+      // workday → full
+      save({ ...store, vacationDays: [...store.vacationDays, date] })
+    }
   }
 
   function setAllowance(allowance: number) {
-    persist({ ...store, allowance })
+    save({ ...store, allowance })
   }
 
-  function removeDays(dates: Date[]) {
+  function setTripName(key: string, name: string) {
+    const next = { ...store.tripNames }
+    if (name.trim()) {
+      next[key] = name.trim()
+    } else {
+      delete next[key]
+    }
+    save({ ...store, tripNames: next })
+  }
+
+  function removeDays(dates: Date[], tripKey?: string) {
     const toRemove = new Set(dates.map(d => format(d, 'yyyy-MM-dd')))
-    persist({ ...store, vacationDays: store.vacationDays.filter(d => !toRemove.has(d)) })
+    const nextNames = { ...store.tripNames }
+    if (tripKey) delete nextNames[tripKey]
+    save({
+      ...store,
+      vacationDays: store.vacationDays.filter(d => !toRemove.has(d)),
+      halfDays: store.halfDays.filter(d => !toRemove.has(d)),
+      tripNames: nextNames,
+    })
   }
 
   function resetDays() {
-    persist({ ...store, vacationDays: [] })
+    save({ ...store, vacationDays: [], halfDays: [] })
   }
 
-  return { store, toggleDay, setAllowance, removeDays, resetDays }
+  return { store, toggleDay, setAllowance, setTripName, removeDays, resetDays }
 }

@@ -29,11 +29,16 @@ function resolveDayType(
   date: Date,
   isoDate: string,
   holidays: Set<string>,
-  vacationDays: Set<string>
+  halfHolidays: Set<string>,
+  vacationDays: Set<string>,
+  halfDays: Set<string>
 ): DayType {
   if (isWeekend(date)) return 'weekend'
-  if (holidays.has(isoDate)) return 'holiday'
   if (vacationDays.has(isoDate)) return 'vacation'
+  if (halfDays.has(isoDate) && halfHolidays.has(isoDate)) return 'half-vacation-half-holiday'
+  if (halfDays.has(isoDate)) return 'half-vacation'
+  if (halfHolidays.has(isoDate)) return 'half-holiday'
+  if (holidays.has(isoDate)) return 'holiday'
   return 'workday'
 }
 
@@ -61,7 +66,9 @@ export function buildCalendarMonth(
   year: number,
   month: number,
   holidays: Set<string>,
-  vacationDays: Set<string>
+  halfHolidays: Set<string>,
+  vacationDays: Set<string>,
+  halfDays: Set<string>
 ): CalendarMonth {
   const firstDay = startOfMonth(new Date(year, month))
   const lastDay = endOfMonth(firstDay)
@@ -72,7 +79,7 @@ export function buildCalendarMonth(
     return {
       date: isoDate,
       dayOfMonth: date.getDate(),
-      type: resolveDayType(date, isoDate, holidays, vacationDays),
+      type: resolveDayType(date, isoDate, holidays, halfHolidays, vacationDays, halfDays),
     }
   })
 
@@ -87,9 +94,11 @@ export function buildCalendarMonth(
 export function buildCalendarYear(
   year: number,
   holidays: Set<string>,
-  vacationDays: Set<string>
+  halfHolidays: Set<string>,
+  vacationDays: Set<string>,
+  halfDays: Set<string>
 ): CalendarMonth[] {
   return Array.from({ length: 12 }, (_, month) =>
-    buildCalendarMonth(year, month, holidays, vacationDays)
+    buildCalendarMonth(year, month, holidays, halfHolidays, vacationDays, halfDays)
   )
 }

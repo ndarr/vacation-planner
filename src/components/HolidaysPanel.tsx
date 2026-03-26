@@ -8,7 +8,10 @@ interface Props {
 function HolidayRow({ holiday }: { holiday: Holiday }) {
   return (
     <div className="flex items-center justify-between py-2 border-b border-gray-100 dark:border-gray-700 last:border-0">
-      <p className="text-sm font-medium text-gray-800 dark:text-gray-100">{holiday.name}</p>
+      <p className="text-sm font-medium text-gray-800 dark:text-gray-100">
+        {holiday.name}
+        {holiday.halfDay && <span className="ml-1 text-xs text-red-300">½</span>}
+      </p>
       <span className="text-xs text-red-400 whitespace-nowrap ml-2">
         {format(parseISO(holiday.date), 'MMM d')}
       </span>
