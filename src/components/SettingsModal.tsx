@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { getSupportedCountries } from '../utils/countries'
+import { getRegions } from '../utils/regions'
 import type { Settings, Theme } from '../types'
 
 interface Props {
@@ -65,6 +66,7 @@ function ThemeToggle({ theme, onChange }: { theme: Theme; onChange: (t: Theme) =
 
 export function SettingsModal({ settings, allowance, onUpdateSettings, onUpdateAllowance, onClose }: Props) {
   const countries = useMemo(getSupportedCountries, [])
+  const regions = useMemo(() => getRegions(settings.country), [settings.country])
   const [allowanceInput, setAllowanceInput] = useState(String(allowance))
 
   return (
@@ -110,13 +112,29 @@ export function SettingsModal({ settings, allowance, onUpdateSettings, onUpdateA
             <select
               className="text-sm border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
               value={settings.country}
-              onChange={e => onUpdateSettings({ country: e.target.value })}
+              onChange={e => onUpdateSettings({ country: e.target.value, region: undefined })}
             >
               {countries.map(c => (
                 <option key={c.code} value={c.code}>{c.name}</option>
               ))}
             </select>
           </label>
+
+          {regions.length > 0 && (
+            <label className="flex flex-col gap-1.5">
+              <span className="text-xs font-medium text-gray-500 dark:text-gray-400">Region</span>
+              <select
+                className="text-sm border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                value={settings.region ?? ''}
+                onChange={e => onUpdateSettings({ region: e.target.value || undefined })}
+              >
+                <option value="">All regions (national only)</option>
+                {regions.map(r => (
+                  <option key={r.code} value={r.code}>{r.name}</option>
+                ))}
+              </select>
+            </label>
+          )}
         </div>
       </div>
     </div>
