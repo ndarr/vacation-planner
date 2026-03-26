@@ -30,10 +30,14 @@ function App() {
   const [settingsOpen, setSettingsOpen] = useState(false)
   useTheme(settings.theme)
 
-  const holidays = useMemo(
-    () => getHolidays(settings.year, settings.country, settings.region),
-    [settings.year, settings.country, settings.region]
-  )
+  const holidays = useMemo(() => {
+    const publicHolidays = getHolidays(settings.year, settings.country, settings.region)
+    const custom = settings.customHolidays.map(h => ({
+      date: `${settings.year}-${h.date}`,
+      name: h.name,
+    }))
+    return [...publicHolidays, ...custom].sort((a, b) => a.date.localeCompare(b.date))
+  }, [settings.year, settings.country, settings.region, settings.customHolidays])
   const holidaySet = useMemo(() => new Set(holidays.map(h => h.date)), [holidays])
   const vacationDays = useMemo(() => new Set(store.vacationDays), [store.vacationDays])
   const periods = useMemo(() => computePeriods(store.vacationDays, holidaySet), [store.vacationDays, holidaySet])

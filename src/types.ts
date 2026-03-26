@@ -2,11 +2,17 @@ export type DayType = 'workday' | 'vacation' | 'holiday' | 'weekend'
 
 export type Theme = 'light' | 'system' | 'dark'
 
+export interface CustomHoliday {
+  date: string  // MM-DD, recurring every year
+  name: string
+}
+
 export interface Settings {
   year: number
   country: string
   region?: string
   theme: Theme
+  customHolidays: CustomHoliday[]
 }
 
 export interface YearStore {

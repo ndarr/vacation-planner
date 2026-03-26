@@ -1,7 +1,8 @@
 import { useMemo, useState } from 'react'
+import { format } from 'date-fns'
 import { getSupportedCountries } from '../utils/countries'
 import { getRegions } from '../utils/regions'
-import type { Settings, Theme } from '../types'
+import type { Settings, Theme, CustomHoliday } from '../types'
 
 interface Props {
   settings: Settings
@@ -64,6 +65,97 @@ function ThemeToggle({ theme, onChange }: { theme: Theme; onChange: (t: Theme) =
   )
 }
 
+function formatMMDD(mmdd: string): string {
+  const [month, day] = mmdd.split('-').map(Number)
+  return format(new Date(2000, month - 1, day), 'MMM d')
+}
+
+function CustomHolidaysSection({ customHolidays, onChange }: {
+  customHolidays: CustomHoliday[]
+  onChange: (holidays: CustomHoliday[]) => void
+}) {
+  const [adding, setAdding] = useState(false)
+  const [newDate, setNewDate] = useState('')
+  const [newName, setNewName] = useState('')
+
+  function add() {
+    if (!newDate || !newName.trim()) return
+    const [, month, day] = newDate.split('-')
+    onChange([...customHolidays, { date: `${month}-${day}`, name: newName.trim() }])
+    setAdding(false)
+    setNewDate('')
+    setNewName('')
+  }
+
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="flex items-center justify-between">
+        <span className="text-xs font-medium text-gray-500 dark:text-gray-400">Company Holidays</span>
+        {!adding && (
+          <button
+            onClick={() => setAdding(true)}
+            className="text-xs text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300"
+          >
+            + Add
+          </button>
+        )}
+      </div>
+
+      {customHolidays.length === 0 && !adding && (
+        <p className="text-xs text-gray-400 dark:text-gray-500 italic">None added yet.</p>
+      )}
+
+      {customHolidays.map((h, i) => (
+        <div key={i} className="flex items-center justify-between py-0.5">
+          <span className="text-sm text-gray-700 dark:text-gray-300 truncate">{h.name}</span>
+          <div className="flex items-center gap-2 ml-2 shrink-0">
+            <span className="text-xs text-gray-400 dark:text-gray-500">{formatMMDD(h.date)}</span>
+            <button
+              onClick={() => onChange(customHolidays.filter((_, j) => j !== i))}
+              className="text-red-400 hover:text-red-500 text-xs leading-none"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      ))}
+
+      {adding && (
+        <div className="flex flex-col gap-2 pt-1">
+          <input
+            type="text"
+            placeholder="e.g. Christmas Eve"
+            value={newName}
+            onChange={e => setNewName(e.target.value)}
+            className="text-sm border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+            autoFocus
+          />
+          <input
+            type="date"
+            value={newDate}
+            onChange={e => setNewDate(e.target.value)}
+            className="text-sm border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+          />
+          <div className="flex gap-2">
+            <button
+              onClick={add}
+              className="flex-1 text-sm bg-blue-500 hover:bg-blue-600 text-white rounded-lg py-1.5 transition-colors"
+            >
+              Add
+            </button>
+            <button
+              onClick={() => { setAdding(false); setNewDate(''); setNewName('') }}
+              className="flex-1 text-sm border border-gray-200 dark:border-gray-600 rounded-lg py-1.5 text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
 export function SettingsModal({ settings, allowance, onUpdateSettings, onUpdateAllowance, onClose }: Props) {
   const countries = useMemo(getSupportedCountries, [])
   const regions = useMemo(() => getRegions(settings.country), [settings.country])
@@ -72,7 +164,7 @@ export function SettingsModal({ settings, allowance, onUpdateSettings, onUpdateA
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div className="absolute inset-0 bg-black/40 dark:bg-black/60" onClick={onClose} />
-      <div className="relative bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-sm mx-4 p-6">
+      <div className="relative bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-sm mx-4 p-6 max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-5">
           <h2 className="text-base font-semibold text-gray-800 dark:text-gray-100">Settings</h2>
           <button
@@ -135,6 +227,13 @@ export function SettingsModal({ settings, allowance, onUpdateSettings, onUpdateA
               </select>
             </label>
           )}
+
+          <hr className="border-gray-100 dark:border-gray-700" />
+
+          <CustomHolidaysSection
+            customHolidays={settings.customHolidays}
+            onChange={customHolidays => onUpdateSettings({ customHolidays })}
+          />
         </div>
       </div>
     </div>

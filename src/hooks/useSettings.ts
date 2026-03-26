@@ -7,6 +7,7 @@ const DEFAULT_SETTINGS: Settings = {
   year: new Date().getFullYear(),
   country: 'DE',
   theme: 'system',
+  customHolidays: [],
 }
 
 function load(): Settings {
